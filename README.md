@@ -8,11 +8,6 @@
 # Smart Claims Processor
 
 A production-style multi-agent insurance claims automation platform built using LangGraph, CrewAI, FastAPI, React, and modern Large Language Models.
-
-## Author
-
-Dikshu015
-
 ## Overview
 
 Smart Claims Processor automates insurance claim processing through a coordinated network of AI agents. The system validates incoming claims, performs fraud analysis, assesses damages, verifies policy compliance, calculates settlements, and supports human review for high-risk cases.
