@@ -152,7 +152,7 @@ smart-claims-processor/
 
 ```bash
 # 1. Clone and open project folder in VS Code (or any IDE)
-git clone https://github.com/Dikshu015/smart-claims-processor
+git clone https://github.com/NishantTripathi21/Smart-Claims-Processor.git
 cd smart-claims-processor
 
 # 2. Create venv + install backend deps in the VSCode (or any IDE)
