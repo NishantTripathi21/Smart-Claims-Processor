@@ -97,11 +97,6 @@ settlement:
     year_5_plus: 0.50
 
 # HITL thresholds (INR values)
-hitl:
-  triggers:
-    min_amount: 500000             # ₹5,00,000 (₹5 lakh)
-    first_claim_high_value: 200000 # ₹2,00,000 (₹2 lakh)
-
 # Fraud baselines for Indian market (INR)
 fraud_baselines:
   own_damage: { avg_amount: 85000, std_dev: 60000, max_normal: 500000 }

@@ -53,14 +53,10 @@ def run_communication_agent(state: ClaimsState) -> dict:
     claim_id = claim["claim_id"]
     settlement = state.get("settlement_output")
     fraud_output = state.get("fraud_output")
-    evaluation = state.get("evaluation_output")
-    hitl_required = state.get("hitl_required", False)
-    human_decision = state.get("human_decision")
     start_time = time.time()
 
     logger.info(f"[{claim_id}] Communication agent started")
 
-    # Final decision - prefer human override if present
     final_decision = state.get("final_decision") or ClaimDecision.PENDING_DOCUMENTS
     final_amount = state.get("final_amount_usd") or 0.0
 
@@ -68,22 +64,9 @@ def run_communication_agent(state: ClaimsState) -> dict:
 
     llm = get_structured_llm(CommunicationOutput)
 
-    hitl_context = ""
-    if hitl_required and human_decision:
-        hitl_context = f"""
-        NOTE: This claim was escalated for human review.
-        Human reviewer decision: {human_decision}
-        Human override of AI recommendation: {state.get('human_override', False)}
-        Reviewer notes: {state.get('human_notes', 'None')}
-        """
-
     fraud_context = ""
     if fraud_output and fraud_output.fraud_score > 0.5:
         fraud_context = "NOTE: This claim had elevated fraud indicators. Do NOT mention fraud in claimant communication - this is for internal notes only."
-
-    eval_context = ""
-    if evaluation:
-        eval_context = f"Decision quality score: {evaluation.overall_score:.2f}/1.0"
 
     # Build denial reasons from settlement output or intake flags
     intake = state.get("intake_output")
@@ -114,9 +97,7 @@ def run_communication_agent(state: ClaimsState) -> dict:
     DENIAL REASONS (if denied): {denial_reasons_text}
     INTAKE NOTES: {intake_notes_text}
     EXCLUSIONS: {', '.join(state.get('policy_output').exclusions_triggered) if state.get('policy_output') else 'N/A'}
-    {hitl_context}
     {fraud_context}
-    {eval_context}
 
     Write:
     1. A professional email notification to the claimant explaining the decision.
@@ -157,8 +138,8 @@ def run_communication_agent(state: ClaimsState) -> dict:
         amount_usd=final_amount,
         total_tokens=state.get("total_tokens_used", 0),
         total_cost_usd=state.get("total_cost_usd", 0.0),
-        evaluation_score=evaluation.overall_score if evaluation else None,
-        human_reviewed=hitl_required,
+        evaluation_score=None,
+        human_reviewed=False,
     )
 
     log_agent_action(

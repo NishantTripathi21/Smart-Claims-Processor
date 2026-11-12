@@ -41,12 +41,6 @@ class FraudRiskLevel(str, Enum):
     CONFIRMED = "confirmed"
 
 
-class HITLPriority(str, Enum):
-    CRITICAL = "critical"   # Resolve within 4 hours
-    HIGH = "high"           # Resolve within 24 hours
-    NORMAL = "normal"       # Resolve within 72 hours
-
-
 class CoverageStatus(str, Enum):
     COVERED = "covered"
     PARTIALLY_COVERED = "partially_covered"
@@ -143,19 +137,6 @@ class SettlementOutput(BaseModel):
     denial_reasons: list[str] = Field(default_factory=list, description="Reasons if denied")
     confidence: float = Field(default=0.80, ge=0.0, le=1.0)
     regulatory_compliance: bool = Field(default=True, description="Passes state regulatory requirements")
-
-
-class EvaluationOutput(BaseModel):
-    """Output from LLM-as-Judge Evaluator."""
-    overall_score: float = Field(ge=0.0, le=1.0, description="Overall decision quality 0-1")
-    accuracy_score: float = Field(ge=0.0, le=1.0)
-    completeness_score: float = Field(ge=0.0, le=1.0)
-    fairness_score: float = Field(ge=0.0, le=1.0)
-    safety_score: float = Field(ge=0.0, le=1.0)
-    transparency_score: float = Field(ge=0.0, le=1.0)
-    passed: bool = Field(description="Whether the decision passes quality gate")
-    feedback: str = Field(description="Specific improvement recommendations if failed")
-    flags: list[str] = Field(default_factory=list, description="Critical issues requiring immediate attention")
 
 
 class CommunicationOutput(BaseModel):

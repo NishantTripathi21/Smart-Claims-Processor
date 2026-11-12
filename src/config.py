@@ -127,21 +127,6 @@ def get_agent_config(agent_name: str) -> dict:
     return _load_raw()["agents"].get(agent_name, {})
 
 
-def get_hitl_config() -> dict:
-    base = copy.deepcopy(_load_raw()["hitl"])
-    # Merge country-level HITL overrides
-    country_hitl = get_country_config().get("hitl", {})
-    cfg = _deep_merge(base, country_hitl)
-    # Env overrides
-    if os.getenv("HITL_MIN_AMOUNT"):
-        cfg["triggers"]["min_amount"] = float(os.getenv("HITL_MIN_AMOUNT"))
-    if os.getenv("HITL_FRAUD_THRESHOLD"):
-        cfg["triggers"]["fraud_score"] = float(os.getenv("HITL_FRAUD_THRESHOLD"))
-    if os.getenv("HITL_LOW_CONFIDENCE"):
-        cfg["triggers"]["low_confidence"] = float(os.getenv("HITL_LOW_CONFIDENCE"))
-    return cfg
-
-
 def get_pii_config() -> dict:
     """PII masking config from the active country profile."""
     return get_country_config().get("pii", {})
@@ -195,15 +180,6 @@ def get_security_config() -> dict:
         cfg["audit_log"]["path"] = os.getenv("AUDIT_LOG_PATH")
     cfg["pii_masking"] = os.getenv("PII_MASKING_ENABLED", "true").lower() == "true"
     return cfg
-
-
-def get_evaluation_config() -> dict:
-    return _load_raw()["evaluation"]
-
-
-def get_confidence_gate_config() -> dict:
-    """Confidence gate thresholds for per-agent HITL routing."""
-    return _load_raw().get("confidence_gates", {"enabled": False})
 
 
 def get_pipeline_config() -> dict:

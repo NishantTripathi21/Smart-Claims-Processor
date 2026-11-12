@@ -75,12 +75,6 @@ settlement:
   max_payout_multiplier: 1.15      # never pay > 115% of assessed damage
   tax_on_payout: 0.0               # no tax on insurance payouts in US
 
-# HITL thresholds (override base.yaml)
-hitl:
-  triggers:
-    min_amount: 10000              # $10K
-    first_claim_high_value: 5000   # $5K
-
 # Fraud baselines (average amounts per claim type for anomaly detection)
 fraud_baselines:
   auto_collision: { avg_amount: 6500, std_dev: 4200, max_normal: 25000 }

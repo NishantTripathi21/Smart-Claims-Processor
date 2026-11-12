@@ -2,15 +2,14 @@
 Clean claims data while preserving users and policies.
 
 Usage:
-    python scripts/clean_data.py              # Clean claims, appeals, HITL queue
+    python scripts/clean_data.py              # Clean claims and appeals
     python scripts/clean_data.py --all        # Delete ALL DBs (full reset, loses users too)
     python scripts/clean_data.py --dry-run    # Show what would be deleted without doing it
 
 What gets cleaned (default):
     - All claims (claim table in api.db)
     - All appeals (appeal table in api.db)
-    - HITL queue (hitl_queue.db)
-    - LangGraph checkpoints (claims_checkpoints.db)
+    - audit logs and memory files
     - Audit logs (data/audit_logs/)
 
 What is preserved (default):
@@ -26,7 +25,6 @@ from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 API_DB = DATA_DIR / "api.db"
-HITL_DB = DATA_DIR / "hitl_queue.db"
 POLICIES_DB = DATA_DIR / "policies.db"
 CHECKPOINTS_DB = DATA_DIR / "claims_checkpoints.db"
 AUDIT_DIR = DATA_DIR / "audit_logs"
@@ -70,14 +68,12 @@ def clean_claims_only(dry_run: bool = False) -> None:
 
 def clean_all(dry_run: bool = False) -> None:
     """Delete ALL databases - full reset."""
-    for db in [API_DB, HITL_DB, POLICIES_DB, CHECKPOINTS_DB]:
+    for db in [API_DB, POLICIES_DB]:
         _delete_file(db, dry_run)
 
 
 def clean_supporting(dry_run: bool = False) -> None:
-    """Delete HITL queue, checkpoints, audit logs."""
-    _delete_file(HITL_DB, dry_run)
-    _delete_file(CHECKPOINTS_DB, dry_run)
+    """Delete audit logs and memory files."""
 
     if AUDIT_DIR.exists():
         if dry_run:

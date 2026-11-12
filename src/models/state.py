@@ -13,9 +13,7 @@ from typing import Annotated, Optional, TypedDict
 from src.models.schemas import (
     ClaimDecision,
     DamageAssessmentOutput,
-    EvaluationOutput,
     FraudAssessmentOutput,
-    HITLPriority,
     IntakeValidationOutput,
     PolicyCheckOutput,
     SettlementOutput,
@@ -70,23 +68,8 @@ class ClaimsState(TypedDict):
     # ── Settlement ───────────────────────────────────────────────────────
     settlement_output: Optional[SettlementOutput]
 
-    # ── Evaluation ───────────────────────────────────────────────────────
-    evaluation_output: Optional[EvaluationOutput]
-    evaluation_passed: Optional[bool]
-
     # ── Communication ────────────────────────────────────────────────────
     communication_output: Optional[CommunicationOutput]
-
-    # ── HITL ─────────────────────────────────────────────────────────────
-    hitl_required: bool
-    hitl_triggers: list[str]            # Reasons HITL was triggered
-    hitl_priority: Optional[HITLPriority]
-    hitl_priority_score: Optional[float]
-    hitl_ticket_id: Optional[str]
-    human_decision: Optional[str]       # Decision entered by human reviewer
-    human_reviewer_id: Optional[str]
-    human_notes: Optional[str]
-    human_override: bool                # True if human overrode AI recommendation
 
     # ── Final Decision ───────────────────────────────────────────────────
     final_decision: Optional[ClaimDecision]
@@ -113,16 +96,12 @@ def initial_state(claim: ClaimInput) -> ClaimsState:
     """
     state: dict = {
         "claim": claim,
-        # Booleans that default to False
-        "hitl_required": False,
-        "human_override": False,
         "guardrails_passed": True,
         # Numeric defaults
         "agent_call_count": 0,
         "total_tokens_used": 0,
         "total_cost_usd": 0.0,
         # Append-only lists (operator.add needs a starting list)
-        "hitl_triggers": [],
         "guardrails_violations": [],
         "pipeline_trace": [],
         "error_log": [],

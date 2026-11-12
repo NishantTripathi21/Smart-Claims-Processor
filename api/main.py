@@ -19,7 +19,6 @@ from api.routes_analytics import router as analytics_router
 from api.routes_appeals import router as appeals_router
 from api.routes_auth import router as auth_router
 from api.routes_claims import router as claims_router
-from api.routes_hitl import router as hitl_router
 from api.routes_policies import router as policies_router
 from api.routes_settings import router as settings_router
 from api.security import seed_admin
@@ -89,12 +88,9 @@ def root():
 def health():
     return {"status": "healthy"}
 
-# Register API routers for different modules (auth, claims, HITL, appeals, analytics, policies, settings). 
-# Each router is defined in its respective module under api/routes_*.py and contains related endpoints. 
-# This modular structure keeps the code organized and maintainable as the application grows.
+# Register the completed backend modules.
 app.include_router(auth_router)
 app.include_router(claims_router)
-app.include_router(hitl_router)
 app.include_router(appeals_router)
 app.include_router(analytics_router)
 app.include_router(policies_router)
